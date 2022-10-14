@@ -14,25 +14,27 @@ export class HeaderComponent implements OnInit {
   difftyp = {"strAlcoholic": this.typeofSud}
   arr:any = [];
   sample:string = "";
+  api_url:string ="";
 
   constructor() { }
 
   
-  
-  async fetchdata()
+//fetches data to choose kind of cocktail 
+  async fetchdata(api_url:string)
   {
     
-    const api_url = 'https://www.thecocktaildb.com/api/json/v1/1/list.php?a=list'
+    api_url = 'https://www.thecocktaildb.com/api/json/v1/1/list.php?a=list'
     
     const response = await fetch(api_url) 
     const data = response.json();
     return data;
+    
 
 }
-
+//gets different types of cocktails
         async value()
     {
-     const types = await this.fetchdata(); 
+     const types = await this.fetchdata(this.api_url); 
      this.typ = types["drinks"];
       return this.typ;
     }
@@ -41,8 +43,9 @@ export class HeaderComponent implements OnInit {
 
   Types()
   {
-
+    //Get all different Types of cocktails
     do{
+
     this.difftyp = this.typ[this.x];
     this.typeofSud = this.difftyp['strAlcoholic'];
     this.x++;
@@ -52,11 +55,18 @@ export class HeaderComponent implements OnInit {
 
   }
 
-  itemfunc(sample:string)
+  async itemfunc(sample:string)
   {
     if(sample == "Alcoholic")
-      {
-        console.log("You've clicked " + sample);
+      {let erg = 0;
+        const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Alcoholic');
+        const data = response.json();
+        data.then(data => 
+          { erg = data;
+            
+        });
+        
+        
       }
 
       if(sample == "Non alcoholic")
@@ -79,7 +89,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(){
     console.clear();
-    this.fetchdata();
+    this.fetchdata(this.api_url);
     this.value();
     
 
